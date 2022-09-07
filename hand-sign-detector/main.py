@@ -1,7 +1,9 @@
 from HandSignModel.HandSignModel import HandSignModel 
 import cv2
 
-model = HandSignModel(onnx_path="checkpoints/yolov4_1_3_416_416_static.onnx")
+import time
+
+model = HandSignModel(onnx_path="checkpoints/yolov4_tiny_1_3_416_416_static.onnx")
 
 def test():
     img = cv2.imread("test_images/B19_jpg.rf.69527cc1f34d694cc04e55db80ed9b1a.jpg")
@@ -17,7 +19,9 @@ def webcam_inference():
  
     while True:
         _, frame = cap.read()
+        t0 = time.time()
         boxes = model.predict(frame)
+        print("latency: ", time.time() - t0)
         if not boxes:
             print(boxes)
             continue
@@ -33,7 +37,7 @@ def webcam_inference():
             confidence = box[4]
             label = box[5]
             cv2.rectangle(frame,(x,y,w,h),(0,255,0),2)
-            cv2.putText(frame, f"{label}: {confidence}",(w+10,y+h),0,1,(255,0,0))
+            cv2.putText(frame, "{}: {:.3f}".format(label, confidence), (w+10,y+h),0,1,(255,0,0))
         cv2.imshow('hand sign detector', frame)
 
 
