@@ -15,7 +15,33 @@ class HandSignModel:
                 Input Image Size
         """
 
-        self.class_names = ["tomato"]
+        self.class_names = [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z"]
         self.input_size = input_size
         self.onnx_path = onnx_path
         self.threshold = threshold
@@ -108,6 +134,7 @@ class HandSignModel:
                                 ll_box_array[k, 2],
                                 ll_box_array[k, 3],
                                 ll_max_conf[k],
+                                self.class_names[ll_max_id[k]],
                                 ll_max_id[k],
                             ]
                         )
