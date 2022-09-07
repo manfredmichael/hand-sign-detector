@@ -4,7 +4,7 @@ from numpy.core.numeric import argwhere
 import onnxruntime as ort
 
 
-class TomatoModel:
+class HandSignModel:
     def __init__(self, onnx_path="model/yolov4_1_3_416_416_static.onnx", threshold=0.5 ,input_size=(416, 416)):
         """
         Parameters:
