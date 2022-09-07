@@ -108,7 +108,6 @@ class HandSignModel:
                                 ll_box_array[k, 2],
                                 ll_box_array[k, 3],
                                 ll_max_conf[k],
-                                ll_max_conf[k],
                                 ll_max_id[k],
                             ]
                         )
@@ -123,5 +122,6 @@ class HandSignModel:
         output_onnx = self.ort_session.run(None, {input_onnx: img})
         postprocess_onnx = self.__postprocessing_onnx(output_onnx)
         # result_outputs, label_outputs = self.__postprocess_result(postprocess_onnx)
+        return postprocess_onnx
         print("Posprocess onnx:", postprocess_onnx)
         # print("label_outputs:", label_outputs)

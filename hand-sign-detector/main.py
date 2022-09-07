@@ -17,7 +17,26 @@ def webcam_inference():
  
     while True:
         _, frame = cap.read()
+        boxes = model.predict(frame)
+        if not boxes:
+            print(boxes)
+            continue
+        for box in boxes[0]:
+            width = frame.shape[1]
+            height = frame.shape[0]
+            x = int(box[0] * width)
+            y = int(box[1] * height)
+            x2 = int(box[2] * width)
+            y2 = int(box[3] * height)
+            w = x2 - x
+            h = y2 - y
+            confidence = box[4]
+            label = box[5]
+            cv2.rectangle(frame,(x,y,w,h),(0,255,0),2)
+            cv2.putText(frame, f"{label}: {confidence}",(w+10,y+h),0,1,(255,0,0))
         cv2.imshow('hand sign detector', frame)
+
+
      
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
