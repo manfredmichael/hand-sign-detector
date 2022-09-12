@@ -5,7 +5,7 @@ import onnxruntime as ort
 
 
 class HandSignModel:
-    def __init__(self, onnx_path="model/yolov4_1_3_416_416_static.onnx", threshold=0.5 ,input_size=(416, 416)):
+    def __init__(self, onnx_path="model/yolov4_1_3_416_416_static.onnx", threshold=0.4 ,input_size=(416, 416)):
         """
         Parameters:
         ----------
@@ -68,11 +68,12 @@ class HandSignModel:
         
         img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
         # convert to rgb
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = np.transpose(img, (2, 0, 1)).astype(np.float32)
         img = np.expand_dims(img, axis=0)
         img /= 255.0
         return img
+
     def __nmsbbox(self, bbox, max_confidence, min_mode=False):
         x1 = bbox[:, 0]
         y1 = bbox[:, 1]
@@ -101,7 +102,7 @@ class HandSignModel:
 
         return np.array(keep)
 
-    def __postprocessing_onnx(self, output_onnx):
+    def __postprocessing_onnx(self, output_onnx, threshold):
         box_array = output_onnx[0]
         confs = output_onnx[1]
         num_classes = confs.shape[2]
@@ -110,7 +111,7 @@ class HandSignModel:
         max_id = np.argmax(confs, axis=2)
         bboxes_batch = []
         for i in range(box_array.shape[0]):
-            argwhere = max_conf[i] > self.threshold
+            argwhere = max_conf[i] > threshold
 
             l_box_array = box_array[i, argwhere, :]
             l_max_conf = max_conf[i, argwhere]
@@ -143,11 +144,13 @@ class HandSignModel:
         return bboxes_batch
 
 
-    def predict(self, img):
+    def predict(self, img, threshold=None):
+        if threshold is None:
+            threshold = self.threshold
         img = self.__preprocessing_img(img)
         input_onnx = self.ort_session.get_inputs()[0].name
         output_onnx = self.ort_session.run(None, {input_onnx: img})
-        postprocess_onnx = self.__postprocessing_onnx(output_onnx)
+        postprocess_onnx = self.__postprocessing_onnx(output_onnx, threshold)
         # result_outputs, label_outputs = self.__postprocess_result(postprocess_onnx)
         return postprocess_onnx
         print("Posprocess onnx:", postprocess_onnx)

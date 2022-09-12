@@ -1,6 +1,8 @@
 import cv2
+import numpy as np
 
 def draw_bounding_box(img, boxes):
+    img = np.array(img)
     for box in boxes[0]:
         width = img.shape[1]
         height = img.shape[0]

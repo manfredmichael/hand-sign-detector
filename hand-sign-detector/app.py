@@ -96,7 +96,7 @@ def main():
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="Virtual Background with Image Processing", page_icon=":pencil2:"
+        page_title="Hand Sign Detector", page_icon=":pencil2:"
     )
     st.title("Hand Sign Detector")
     # st.sidebar.subheader("Configuration")
