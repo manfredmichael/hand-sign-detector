@@ -68,7 +68,7 @@ class HandSignModel:
         
         img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
         # convert to rgb
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = np.transpose(img, (2, 0, 1)).astype(np.float32)
         img = np.expand_dims(img, axis=0)
         img /= 255.0
