@@ -1,5 +1,6 @@
 from HandSignModel.HandSignModel import HandSignModel 
 import cv2
+from utils import draw_bounding_box
 
 import time
 
@@ -16,28 +17,33 @@ def test():
 
 def webcam_inference():
     cap= cv2.VideoCapture(0)
+
+    # used to record the time when we processed last frame
+    prev_frame_time = 0
+     
+    # used to record the time at which we processed current frame
+    new_frame_time = 0
  
     while True:
         _, frame = cap.read()
+        # prep_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        prep_frame = cv2.GaussianBlur(frame,(3,3),0)
+
+        new_frame_time = time.time()
+        fps = int(1/(new_frame_time-prev_frame_time))
+        prev_frame_time = new_frame_time
+        frame = cv2.rectangle(frame, (0, 0), (30, 30), (0, 102, 255), -1)
+        frame = cv2.putText(frame, str(fps), (3,20),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255), 1)
+
         t0 = time.time()
-        boxes = model.predict(frame)
+        boxes = model.predict(prep_frame)
+        
         print("latency: ", time.time() - t0)
         if not boxes:
             print(boxes)
             continue
-        for box in boxes[0]:
-            width = frame.shape[1]
-            height = frame.shape[0]
-            x = int(box[0] * width)
-            y = int(box[1] * height)
-            x2 = int(box[2] * width)
-            y2 = int(box[3] * height)
-            w = x2 - x
-            h = y2 - y
-            confidence = box[4]
-            label = box[5]
-            cv2.rectangle(frame,(x,y,w,h),(0,255,0),2)
-            cv2.putText(frame, "{}: {:.3f}".format(label, confidence), (w+10,y+h),0,1,(255,0,0))
+
+        frame = draw_bounding_box(frame, boxes)
         cv2.imshow('hand sign detector', frame)
 
 
