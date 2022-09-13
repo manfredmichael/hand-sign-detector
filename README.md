@@ -7,7 +7,7 @@ American Sign Language Letter Detector using YOLOv4-Tiny for my week 4 project d
 ## How to Run This App
 
 ### Via Cloning This Repo
-First, clone this repo: `git clone https://github.com/manfredmichael/hand-sign-detector.git`. Next, you need to run the streamlit interface to use this demo. Download this [model](https://drive.google.com/file/d/14PGd7IWgrK0WzL39MsmKpMHRV18J3NmS/view?usp=sharing) and put it in `hand-sign-detector/checkpoints/`
+First, clone this repo: `git clone https://github.com/manfredmichael/hand-sign-detector.git`. Next, you need to run the streamlit interface to use this demo. Download this [model](https://drive.google.com/file/d/14PGd7IWgrK0WzL39MsmKpMHRV18J3NmS/view?usp=sharing) and put it in `hand-sign-detector/checkpoints/` folder.
 
 
 - Install dependenies: `pip install -r requirements.txt`
