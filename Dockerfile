@@ -11,7 +11,6 @@ COPY hand-sign-detector/checkpoints/yolov4_tiny_1_3_416_416_static.onnx checkpoi
 COPY hand-sign-detector/HandSignModel/ . 
 COPY hand-sign-detector/HandSignModel/__init__.py HandSignModel/__init__.py 
 COPY hand-sign-detector/HandSignModel/HandSignModel.py HandSignModel/HandSignModel.py 
-COPY models/ASLModel.py models/ASLModel.py
 
 ENTRYPOINT [ "streamlit" ]
 CMD ["run", "app.py" ]
