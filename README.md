@@ -2,7 +2,7 @@
 
 American Sign Language Letter Detector using YOLOv4-Tiny for my week 4 project during Nodeflux internship.
 
-![](https://github.com/manfredmichael/hand-sign-detector/blob/main/assets/demo.gif?raw=true)
+![Loading preview...](https://github.com/manfredmichael/hand-sign-detector/blob/main/assets/demo.gif?raw=true)
 
 ## How to Run This App
 
