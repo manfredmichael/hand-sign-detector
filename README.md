@@ -15,7 +15,7 @@ First, clone this repo: `git clone https://github.com/manfredmichael/hand-sign-d
 
 
 ## Technologies & Tools
-![](https://github.com/manfredmichael/hand-sign-detector/blob/main/assets/workspace.png?raw=true
+![](https://github.com/manfredmichael/hand-sign-detector/blob/main/assets/workspace.png?raw=true)
 
 ## About the model
 
