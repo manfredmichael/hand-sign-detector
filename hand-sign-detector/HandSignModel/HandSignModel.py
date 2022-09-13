@@ -5,7 +5,7 @@ import onnxruntime as ort
 
 
 class HandSignModel:
-    def __init__(self, onnx_path="model/yolov4_1_3_416_416_static.onnx", threshold=0.4 ,input_size=(416, 416)):
+    def __init__(self, onnx_path="model/yolov4_1_3_416_416_static.onnx", threshold=0.4, iou_threshold=0.4,input_size=(416, 416)):
         """
         Parameters:
         ----------
@@ -47,8 +47,8 @@ class HandSignModel:
         self.threshold = threshold
         self.nms_threshold = (
             0
-            if self.threshold - 0.1 < 0  
-            else self.threshold - 0.1
+            if iou_threshold- 0.1 < 0  
+            else iou_threshold - 0.1
 
         )
 
@@ -74,7 +74,7 @@ class HandSignModel:
         img /= 255.0
         return img
 
-    def __nmsbbox(self, bbox, max_confidence, min_mode=False):
+    def __nmsbbox(self, bbox, max_confidence, iou_threshold, min_mode=True):
         x1 = bbox[:, 0]
         y1 = bbox[:, 1]
         x2 = bbox[:, 2]
@@ -97,12 +97,12 @@ class HandSignModel:
                 over = inter / np.minimum(areas[order[0]], areas[order[1:]])
             else:
                 over = inter / (areas[order[0]] + areas[order[1:]] - inter)
-            inds = np.where(over <= self.nms_threshold)[0]
+            inds = np.where(over <= iou_threshold)[0]
             order = order[inds + 1]
 
         return np.array(keep)
 
-    def __postprocessing_onnx(self, output_onnx, threshold):
+    def __postprocessing_onnx(self, output_onnx, threshold, iou_threshold):
         box_array = output_onnx[0]
         confs = output_onnx[1]
         num_classes = confs.shape[2]
@@ -122,7 +122,7 @@ class HandSignModel:
                 ll_box_array = l_box_array[cls_argwhere, :]
                 ll_max_conf = l_max_conf[cls_argwhere]
                 ll_max_id = l_max_id[cls_argwhere]
-                keep = self.__nmsbbox(ll_box_array, ll_max_conf, self.nms_threshold)
+                keep = self.__nmsbbox(ll_box_array, ll_max_conf, iou_threshold)
                 if keep.size > 0:
                     ll_box_array = ll_box_array[keep, :]
                     ll_max_conf = ll_max_conf[keep]
@@ -144,13 +144,15 @@ class HandSignModel:
         return bboxes_batch
 
 
-    def predict(self, img, threshold=None):
+    def predict(self, img, threshold=None, iou_threshold=None):
         if threshold is None:
             threshold = self.threshold
+        if iou_threshold is None:
+            iou_threshold = self.nms_threshold
         img = self.__preprocessing_img(img)
         input_onnx = self.ort_session.get_inputs()[0].name
         output_onnx = self.ort_session.run(None, {input_onnx: img})
-        postprocess_onnx = self.__postprocessing_onnx(output_onnx, threshold)
+        postprocess_onnx = self.__postprocessing_onnx(output_onnx, threshold, iou_threshold)
         # result_outputs, label_outputs = self.__postprocess_result(postprocess_onnx)
         return postprocess_onnx
         print("Posprocess onnx:", postprocess_onnx)
