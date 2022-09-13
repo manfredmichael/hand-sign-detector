@@ -3,6 +3,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install st_btn_select
 
 COPY hand-sign-detector/app.py .
 COPY hand-sign-detector/utils.py .
